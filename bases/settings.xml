@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <pluginGroups>
+    </pluginGroups>
+
+    <proxies>
+    </proxies>
+    <servers>
+        <server>
+            <id>ITS_Snapshots</id>
+        </server>
+    </servers>
+    <profiles>
+        <profile>
+            <id>itone</id>
+            <properties>
+                <nexus>http://172.17.189.146:8081/nexus</nexus>
+            </properties>
+            <repositories>
+                <repository>
+                    <id>public</id>
+                    <url>http://172.17.189.146:8081/nexus/content/groups/public/</url>
+                </repository>
+                <repository>
+                    <id>ITS_Snapshots</id>
+                    <url>http://172.17.189.146:8081/nexus/content/repositories/snapshots/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                </repository>
+                <repository>
+                    <id>release</id>
+                    <url>http://172.17.189.146:8081/nexus/content/repositories/releases/</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>public</id>
+                    <url>http://172.17.189.146:8081/nexus/content/groups/public/</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>itone</activeProfile>
+    </activeProfiles>
+</settings>
