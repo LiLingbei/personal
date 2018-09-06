@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<review xmlns="http://plugins.intellij.net/revu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://plugins.intellij.net/revu http://plugins.intellij.net/revu/ns/revu_1_0.xsd" name="0_template" status="_template" shared="true">
+  <history createdBy="[unknown]" lastUpdatedBy="[unknown]" createdOn="2015-08-27 11:57:39 +0800" lastUpdatedOn="2016-08-26 11:28:22 +0800"/>
+  <goal>代码评审计划命名规范：rv_版本号</goal>
+  <referential>
+    <priorities>
+      <priority order="0" name="次要(minor)"/>
+      <priority order="1" name="普通(normal)"/>
+      <priority order="2" name="重要(major)"/>
+      <priority order="3" name="关键(critical)"/>
+    </priorities>
+    <tags>
+      <tag name="优化(optimization)"/>
+      <tag name="可移植性(portability)"/>
+      <tag name="可维护性(maintenability)"/>
+      <tag name="文档(documentation)"/>
+      <tag name="标准(standard)"/>
+      <tag name="正确性(correctness)"/>
+      <tag name="表面问题(cosmetic)"/>
+      <tag name="重复(duplication)"/>
+      <tag name="问题(question)"/>
+    </tags>
+    <users>
+      <user displayName="刘枫" login="刘枫" roles="admin,reviewer,author"/>
+      <user displayName="张宗磊" login="张宗磊" roles="admin,reviewer,author"/>
+      <user displayName="李文恒" login="李文恒" roles="admin,reviewer,author"/>
+      <user displayName="李柯柯" login="李柯柯" roles="admin,reviewer,author"/>
+      <user displayName="李领北" login="李领北" roles="admin,reviewer,author"/>
+      <user displayName="王振坤" login="王振坤" roles="admin,reviewer,author"/>
+      <user displayName="王雅男" login="王雅男" roles="admin,reviewer,author"/>
+      <user displayName="程兴宇" login="程兴宇" roles="admin,reviewer,author"/>
+      <user displayName="郝志超" login="郝志超" roles="admin,reviewer,author"/>
+      <user displayName="高居华" login="高居华" roles="admin,reviewer,author"/>
+    </users>
+  </referential>
+  <filescope pathPattern="file[*]:*//*"/>
+  <issues/>
+</review>

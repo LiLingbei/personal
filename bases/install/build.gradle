@@ -1,0 +1,210 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import groovy.json.StringEscapeUtils
+
+import java.util.zip.ZipFile
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+//
+defaultTasks = ['initDir', 'doDeps', 'doAgentsDeps', 'copyPlugins', 'copyCustomationFiles', 'delCmdbApi', 'doZip', 'doZipWeb', 'doSend']
+
+version = new XmlSlurper().parse('../pom.xml').version.text()
+println "版本：$version"
+
+def agents = [
+        dcs: ['pdk']
+]
+def preName = "itone"
+def projectName = "rmc"
+
+repositories {
+    mavenLocal()
+    maven {
+        name 'public'
+        url 'http://172.17.189.146:8081/nexus/content/groups/public/'
+    }
+    maven {
+        name 'ITS_Snapshots'
+        url 'http://172.17.189.146:8081/nexus/content/repositories/snapshots/'
+    }
+}
+
+ext {
+    distDir = new File(buildDir, 'itone')
+    DIST_DIR = relativePath(distDir)
+    HTTP_DIR = '/var/www/html/itone/'
+}
+println DIST_DIR
+
+task initDir << {
+    description = '初始化发布目录'
+    if (distDir.exists()) {
+        distDir.deleteDir()
+    }
+
+    distDir.mkdirs()
+    ['bin', 'conf', 'jdk', 'db/sql', 'tool', 'work'].each {
+        new File(distDir, it).mkdirs()
+    }
+    ['', 'server', 'web'].each {
+        File appDir = it ? new File(distDir, it) : distDir
+        new File(appDir, 'lib/3rd').mkdirs()
+        new File(appDir, 'lib/app').mkdirs()
+    }
+    agents.keySet().each {
+        File appDir = new File(distDir, 'agents/' + it)
+        new File(appDir, 'lib/3rd').mkdirs()
+        new File(appDir, 'lib/app').mkdirs()
+    }
+}
+
+task doDeps << {
+    description = 'JAR依赖处理'
+    def servers = [
+            common: ['common', 'api', 'cmdb-api'],
+            server: ['ccs', 'eac'],
+            web   : ['web','web-util']
+    ]
+
+    servers.each { k, v ->
+        configurations.create("dep_$k")
+        def deps = v.collect { "com.its:itone-$it:$version" }
+        dependencies { "dep_$k" deps }
+    }
+
+    configurations {
+        all*.exclude group: 'commons-logging'
+    }
+
+    def copyDeps = { commonJars, baseDir ->
+        def appDir = new File(baseDir, 'lib/app')
+        def trdDir = new File(baseDir, 'lib/3rd')
+        commonJars.each { jar ->
+            copy {
+                from jar.absolutePath
+                into jar.name.startsWith('itone-') ? appDir : trdDir
+            }
+        }
+    }
+
+    def commonJars = configurations["dep_common"].files
+    copyDeps(commonJars, distDir)
+
+    Set common = commonJars.collect { it.name }
+
+    servers.each { k, v ->
+        def jars = configurations["dep_$k"].files.findAll { !common.contains(it.name) }
+        copyDeps(jars, new File(distDir, k))
+    }
+
+}
+
+task doAgentsDeps << {
+    description = 'Agents的JAR依赖处理'
+
+    agents.each { k, v ->
+        configurations.create("dep_$k")
+        def deps = v.collect { "com.its:$preName-$it:$version" }
+        dependencies { "dep_$k" deps }
+    }
+    def copyDeps = { commonJars, baseDir ->
+        def appDir = new File(baseDir, 'lib/app')
+        def trdDir = new File(baseDir, 'lib/3rd')
+
+        commonJars.each { jar ->
+            copy {
+                from jar.absolutePath
+                into jar.name.startsWith(preName) ? appDir : trdDir
+            }
+        }
+    }
+    def commonJars = configurations["dep_common"].files
+
+    Set common = commonJars.collect { it.name }
+
+    agents.each { k, v ->
+        def jars = configurations["dep_$k"].files.findAll { !common.contains(it.name) }
+        copyDeps(jars, new File(distDir, 'agents/' + k))
+    }
+}
+
+task copyPlugins << {
+    copy {
+        from '../plugins'
+        into DIST_DIR + '/plugins'
+    }
+}
+
+task buildWeb(type: Exec) {
+    commandLine 'sh', 'build_web.sh'
+}
+
+task copyCustomationFiles << {
+    println("...copy conf begin")
+    new File(DIST_DIR + "/" + '/conf/its_config.json') <<
+    mergeJSONConfig(configurations["dep_server"].files, 'its_config.json')
+
+    println("...copy conf end")
+    println("...copy App Customized Files begin")
+    copy {
+        from 'src'
+        into DIST_DIR
+    }
+    println("...copy App Customized Files end")
+}
+
+
+task delCmdbApi << {
+    new File(distDir, 'lib/app').eachFileMatch(~/itone-cmdb-api.*.jar/) { file ->
+        file.delete()
+    }
+}
+task doZip(type: Zip) {
+    from DIST_DIR
+    archiveName = 'itone.zip'
+}
+task doZipWeb(type: Zip) {
+    from 'src/web/atom'
+    archiveName = 'atom_auto.zip'
+}
+task doSend(dependsOn: ['doZip', 'doZipWeb']) << {
+    copy {
+        from doZip.archivePath
+        into HTTP_DIR
+    }
+    copy {
+        from "src/web/atom/assets/module"
+        into HTTP_DIR + "/webapps/app/assets/module"
+    }
+    copy {
+        from doZipWeb.archivePath
+        into HTTP_DIR + "/wvm/"
+    }
+}
+
+def findJarFile(def zipFile, String target) {
+    ZipFile zip = new ZipFile(zipFile)
+    def entry = zip.getEntry(target)
+    if (!entry) {
+        return [:]
+    }
+    def en = zip.getInputStream(entry)
+    return JsonSlurper.newInstance().parse(en, 'utf-8')
+}
+
+def mergeJSONConfig(def files, String target) {
+
+    def result = [:]
+    files.each {
+        if (it.name.endsWith('.jar')) {
+            findJarFile(it, target).each { k, v ->
+                result.put(k, v instanceof List ? v + result.getOrDefault(k, []) : v)
+            }
+        }
+    }
+
+    return StringEscapeUtils.unescapeJava(JsonOutput.prettyPrint(JsonOutput.toJson(result)))
+
+}

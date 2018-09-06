@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<review xmlns="http://plugins.intellij.net/revu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://plugins.intellij.net/revu http://plugins.intellij.net/revu/ns/revu_1_0.xsd" name="rv_3980" status="closed" shared="true">
+  <history createdBy="[unknown]" lastUpdatedBy="李领北" createdOn="2015-09-24 09:43:35 +0800" lastUpdatedOn="2015-09-28 13:40:01 +0800"/>
+  <goal></goal>
+  <referential>
+    <priorities>
+      <priority order="0" name="次要(minor)"/>
+      <priority order="1" name="普通(normal)"/>
+      <priority order="2" name="重要(major)"/>
+      <priority order="3" name="关键(critical)"/>
+    </priorities>
+    <tags>
+      <tag name="优化(optimization)"/>
+      <tag name="可移植性(portability)"/>
+      <tag name="可维护性(maintenability)"/>
+      <tag name="文档(documentation)"/>
+      <tag name="标准(standard)"/>
+      <tag name="正确性(correctness)"/>
+      <tag name="表面问题(cosmetic)"/>
+      <tag name="重复(duplication)"/>
+      <tag name="问题(question)"/>
+    </tags>
+    <users>
+      <user displayName="刘枫" login="刘枫" roles="reviewer,author"/>
+      <user displayName="张宗磊" login="张宗磊" roles="reviewer,author"/>
+      <user displayName="李文恒" login="李文恒" roles="admin,reviewer,author"/>
+      <user displayName="李领北" login="李领北" roles="admin,reviewer,author"/>
+      <user displayName="王康" login="王康" roles="reviewer,author"/>
+      <user displayName="程兴宇" login="程兴宇" roles="reviewer,author"/>
+      <user displayName="高居华" login="高居华" roles="reviewer,author"/>
+    </users>
+  </referential>
+  <filescope pathPattern="file[itone-db]:src/main/resources/db/platform/V20150923_01__cmdb_assetgroup.sql||file[itone-cmdb]:src/main/java/com/its/itone/cmdb/mapper/AssetGroupMapper.java||file[itone-cmdb]:src/main/java/com/its/itone/cmdb/utils/SqlUtils.java"/>
+  <issues>
+    <issue filePath="db/src/main/resources/db/platform/V20150923_01__cmdb_assetgroup.sql" summary="这两种写法有什么不同，使用是否需要区别" vcsRev="3990" lineStart="6" lineEnd="6" hash="-572929353" priority="普通(normal)" status="resolved">
+      <history createdBy="李领北" lastUpdatedBy="李领北" createdOn="2015-09-24 09:54:04 +0800" lastUpdatedOn="2015-09-24 09:54:04 +0800"/>
+    </issue>
+    <issue filePath="itone-cmdb/src/main/java/com/its/itone/cmdb/mapper/AssetGroupMapper.java" summary="这样创建索引好不好，删除表的时候是否需要drop索引" vcsRev="3990" lineStart="47" lineEnd="47" hash="-153961813" priority="重要(major)" status="resolved">
+      <history createdBy="李领北" lastUpdatedBy="李领北" createdOn="2015-09-24 09:57:15 +0800" lastUpdatedOn="2015-09-24 09:57:15 +0800"/>
+    </issue>
+    <issue filePath="itone-cmdb/src/main/java/com/its/itone/cmdb/utils/SqlUtils.java" summary="List类型的数据转换怎么处理合适" vcsRev="3990" lineStart="249" lineEnd="249" hash="-1625766297" priority="重要(major)" status="resolved">
+      <history createdBy="李领北" lastUpdatedBy="李领北" createdOn="2015-09-24 09:55:33 +0800" lastUpdatedOn="2015-09-24 09:55:33 +0800"/>
+    </issue>
+  </issues>
+</review>

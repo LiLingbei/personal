@@ -1,0 +1,10 @@
+{
+    "port": 9090,
+    "apps": {
+        "relax": {
+            "path": "web/itone",
+            "enablePlugin": true
+        }
+    },
+    "uploadResource": "web/itone"
+}
