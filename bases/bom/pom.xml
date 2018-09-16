@@ -13,33 +13,33 @@
     <packaging>pom</packaging>
 
     <properties>
-        <kotlin.version>1.1.3</kotlin.version>
+        <kotlin.version>1.2.70</kotlin.version>
         <guava.version>26.0-jre</guava.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <h2db.verison>1.4.196</h2db.verison>
-        <druid.verison>1.0.17</druid.verison>
-        <fastjson.verison>1.2.33</fastjson.verison>
-        <batis.verison>3.3.0</batis.verison>
+        <h2db.verison>1.4.197</h2db.verison>
+        <druid.verison>1.1.10</druid.verison>
+        <fastjson.verison>1.2.49</fastjson.verison>
+        <batis.verison>3.4.6</batis.verison>
 
-        <quartz.version>2.2.2</quartz.version>
-        <dbutils.version>1.6</dbutils.version>
+        <quartz.version>2.3.0</quartz.version>
+        <dbutils.version>1.7</dbutils.version>
         <servlet.version>3.1.0</servlet.version>
         <jexl.version>2.1.1</jexl.version>
         <commons-jexl3.version>3.1</commons-jexl3.version>
-        <joda-time.version>2.9.2</joda-time.version>
-        <groovy-wslite.version>1.1.2</groovy-wslite.version>
+        <joda-time.version>2.10</joda-time.version>
+        <groovy-wslite.version>1.1.3</groovy-wslite.version>
         <commons-pool2.version>2.4.2</commons-pool2.version>
         <netty.version>4.0.48.Final</netty.version>
 
-        <pagehelper.version>4.1.6</pagehelper.version>
-        <jodd.version>3.7</jodd.version>
+        <pagehelper.version>5.1.6</pagehelper.version>
+        <jodd.version>5.0.4</jodd.version>
         <commons-codec.version>1.10</commons-codec.version>
-        <cos.version>26Dec2008</cos.version>
+        <cos.version>2017.5</cos.version>
         <snakeyaml.version>1.17</snakeyaml.version>
-        <jackson.version>2.7.1</jackson.version>
+        <jackson.version>2.9.6</jackson.version>
 
-        <pf4j.version>1.1.1</pf4j.version>
-        <flyway.version>4.2.0</flyway.version>
+        <pf4j.version>1.3.0</pf4j.version>
+        <flyway.version>5.1.4</flyway.version>
     </properties>
     <dependencyManagement>
         <dependencies>
