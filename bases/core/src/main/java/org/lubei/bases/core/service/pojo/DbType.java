@@ -1,0 +1,1 @@
+package org.lubei.bases.core.service.pojo;/** * 数据库类型枚举 <br> */@Deprecatedpublic enum DbType {    MySql, Postgresql, DB2, Oracle, MSSqlServer, H2}

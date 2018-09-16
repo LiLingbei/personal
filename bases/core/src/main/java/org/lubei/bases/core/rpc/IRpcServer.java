@@ -1,0 +1,1 @@
+package org.lubei.bases.core.rpc;/** * rpc服务端通用接口 * * rpc server interface * * @author hongliangpan@gmail.com */public interface IRpcServer {	void init(RpcServerParams service);	void startUp();	void shutDown();	int getListeningPort();}

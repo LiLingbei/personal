@@ -29,5 +29,10 @@
             <artifactId>bases-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.lubei</groupId>
+            <artifactId>bases-db-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
