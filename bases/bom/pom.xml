@@ -13,13 +13,12 @@
     <packaging>pom</packaging>
 
     <properties>
-        <kotlin.version>1.2.70</kotlin.version>
         <guava.version>26.0-jre</guava.version>
         <slf4j.version>1.7.25</slf4j.version>
         <h2db.verison>1.4.197</h2db.verison>
         <druid.verison>1.1.10</druid.verison>
         <fastjson.verison>1.2.49</fastjson.verison>
-        <batis.verison>3.4.6</batis.verison>
+        <mybatis.verison>3.4.6</mybatis.verison>
 
         <quartz.version>2.3.0</quartz.version>
         <dbutils.version>1.7</dbutils.version>
@@ -136,7 +135,7 @@
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
-                <version>${batis.verison}</version>
+                <version>${mybatis.verison}</version>
             </dependency>
             <dependency>
                 <groupId>tk.mybatis</groupId>
@@ -240,6 +239,17 @@
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-core</artifactId>
+                <version>${metrics.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-api</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-jvm</artifactId>
                 <version>${metrics.version}</version>
                 <exclusions>
                     <exclusion>
