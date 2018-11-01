@@ -2,6 +2,7 @@ package org.lubei.bases.common.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Collections2.filter;
 import static java.util.Collections.unmodifiableCollection;
 
 import com.google.common.collect.Maps;
@@ -21,7 +22,6 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 集合工具类
@@ -245,25 +245,25 @@ public class CollectionUtils {
 
     }
 
-    public static <E, B> Collection<E> distinctOrdered(Collection<E> items, Function<E, B> by,
+    public static <E, B> Collection<E> distinctOrdered(Collection<E> items, Function<E, B> keyFun,
                                                        Comparator<B> comparator) {
-
-        Stream<E> stream;
-        if (items == null || (stream = items.stream().filter(Objects::nonNull)).count() <= 0) {
+        if (items == null || (items = filter(items, Objects::nonNull)).isEmpty()) {
             return Collections.emptyList();
         }
-        Iterator<E> iterator = stream.iterator();
-        E first = iterator.next();
-        B key = by.apply(first);
-        checkArgument(key instanceof Comparable || comparator != null,
-                      "comparator can't be null !");
-        TreeMap<B, E> treeMap = new TreeMap<>(comparator);
-        treeMap.put(key, first);
-        while (iterator.hasNext()) {
-            E v = checkNotNull(iterator.next());
-            B k = checkNotNull(by.apply(v));
-            treeMap.putIfAbsent(k, v);
+        Iterator<E> iterator = items.iterator();
+        E val = iterator.next();
+        B key = checkNotNull(keyFun.apply(val));
+        checkArgument(key instanceof Comparable || comparator != null, "未实现比较接口的key要求比较器不能为空！");
+        if (!iterator.hasNext()) {
+            return Collections.singletonList(val);
         }
+        TreeMap<B, E> treeMap = new TreeMap<>(comparator);
+        treeMap.put(key, val);
+        do {
+            E v = iterator.next();
+            B k = checkNotNull(keyFun.apply(v));
+            treeMap.putIfAbsent(k, v);
+        } while (iterator.hasNext());
         return unmodifiableCollection(treeMap.values());
     }
 
