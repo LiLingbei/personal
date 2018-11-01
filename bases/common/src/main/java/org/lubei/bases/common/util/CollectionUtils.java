@@ -1,6 +1,8 @@
 package org.lubei.bases.common.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableCollection;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -8,14 +10,18 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 集合工具类
@@ -232,6 +238,33 @@ public class CollectionUtils {
         } else {
             return _containsAny(items, any);
         }
+    }
+
+    public static <E, B> void deduplicateSort(Collection<E> items, Function<E, B> by,
+                                              Comparator<B> comparator) {
+
+    }
+
+    public static <E, B> Collection<E> distinctOrdered(Collection<E> items, Function<E, B> by,
+                                                       Comparator<B> comparator) {
+
+        Stream<E> stream;
+        if (items == null || (stream = items.stream().filter(Objects::nonNull)).count() <= 0) {
+            return Collections.emptyList();
+        }
+        Iterator<E> iterator = stream.iterator();
+        E first = iterator.next();
+        B key = by.apply(first);
+        checkArgument(key instanceof Comparable || comparator != null,
+                      "comparator can't be null !");
+        TreeMap<B, E> treeMap = new TreeMap<>(comparator);
+        treeMap.put(key, first);
+        while (iterator.hasNext()) {
+            E v = checkNotNull(iterator.next());
+            B k = checkNotNull(by.apply(v));
+            treeMap.putIfAbsent(k, v);
+        }
+        return unmodifiableCollection(treeMap.values());
     }
 
 
