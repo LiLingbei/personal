@@ -240,28 +240,56 @@ public class CollectionUtils {
         }
     }
 
-    public static <E, B> void deduplicateSort(Collection<E> items, Function<E, B> by,
-                                              Comparator<B> comparator) {
-
+    /**
+     * 把一个对象集合按key去重和排序
+     *
+     * <p>注：如果key类型未实现比较接口则要求比较器不能为空！
+     *
+     * @param items      对象集合
+     * @param keyFun     获取key方法
+     * @param comparator key比较器
+     * @param <V>        对象类型
+     * @param <K>        key类型
+     */
+    public static <V, K> void deduplicateSort(Collection<V> items, Function<V, K> keyFun,
+                                              Comparator<K> comparator) {
+        Collection<V> ordered = distinctOrdered(items, keyFun, comparator);
+        if (ordered.isEmpty()) {
+            return;
+        }
+        items.clear();
+        items.addAll(ordered);
     }
 
-    public static <E, B> Collection<E> distinctOrdered(Collection<E> items, Function<E, B> keyFun,
-                                                       Comparator<B> comparator) {
+    /**
+     * 获取所给集合按key去重和排序后的新集合
+     *
+     * <p>注：如果key类型未实现比较接口则要求比较器不能为空，新集合不可修改！
+     *
+     * @param items      对象集合
+     * @param keyFun     获取key方法
+     * @param comparator key比较器
+     * @param <V>        对象类型
+     * @param <K>        key类型
+     * @return 去重和排序后的新集合
+     */
+    public static <V, K> Collection<V> distinctOrdered(Collection<V> items, Function<V, K> keyFun,
+                                                       Comparator<K> comparator) {
         if (items == null || (items = filter(items, Objects::nonNull)).isEmpty()) {
             return Collections.emptyList();
         }
-        Iterator<E> iterator = items.iterator();
-        E val = iterator.next();
-        B key = checkNotNull(keyFun.apply(val));
+        Iterator<V> iterator = items.iterator();
+        V val = iterator.next();
+        K key = checkNotNull(keyFun.apply(val));
         checkArgument(key instanceof Comparable || comparator != null, "未实现比较接口的key要求比较器不能为空！");
         if (!iterator.hasNext()) {
             return Collections.singletonList(val);
         }
-        TreeMap<B, E> treeMap = new TreeMap<>(comparator);
+        TreeMap<K, V> treeMap = new TreeMap<>(comparator);
         treeMap.put(key, val);
         do {
-            E v = iterator.next();
-            B k = checkNotNull(keyFun.apply(v));
+            V v = iterator.next();
+            K k = checkNotNull(keyFun.apply(v));
             treeMap.putIfAbsent(k, v);
         } while (iterator.hasNext());
         return unmodifiableCollection(treeMap.values());
